@@ -1,23 +1,10 @@
-import { LlmAgent, SequentialAgent } from '@google/adk';
-import { DESCRIPTION_KEY } from './description-agents/output-key.const';
-import { YoutubeDescriptionAgent } from './description-agents/youtube-description.agent';
+import { LlmAgent } from '@google/adk';
+import { DESCRIPTION_KEY } from './output-key.const';
 import { SaveUserContext } from './tools';
-import { YoutubeTranscriptAgent } from './transcript-agent/youtube-transcript.agent';
+import { SequentialYoutubeAgent } from './subagents/youtube-agents';
 
 process.loadEnvFile();
 const model = process.env.GEMINI_MODEL_NAME || 'gemini-3-flash-preview';
-
-// const ParallelYoutubeAgent = new ParallelAgent({
-//     name: "parallel_youtube_agent",
-//     subAgents: [YoutubeDescriptionAgent],
-//     description: "Runs multiple Youtube agents in parallel to gather description, hashtags, and timeline."
-// });
-
-const SequentialYoutubeAgent = new SequentialAgent({
-    name: 'sequential_youtube_agent',
-    subAgents: [YoutubeTranscriptAgent, YoutubeDescriptionAgent],
-    description: 'Runs Youtube agents sequentially to generate description based on transcript.',
-});
 
 export const rootAgent = new LlmAgent({
     name: 'youtube_transcript_agent',
@@ -37,6 +24,5 @@ export const rootAgent = new LlmAgent({
             - When the status is 'error', response with the error message.
     `,
     subAgents: [SequentialYoutubeAgent],
-    // subAgents: [YoutubeDescriptionAgent],
     tools: [SaveUserContext],
 });

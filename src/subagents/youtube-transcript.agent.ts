@@ -1,6 +1,6 @@
 import { LlmAgent } from '@google/adk';
-import { TRANSCRIPT_KEY } from './transcript-key.const';
 import { YoutubeTranscriptTool } from './youtube-transcript.tool';
+import { TRANSCRIPT_KEY } from '../output-key.const';
 
 process.loadEnvFile();
 const model = process.env.GEMINI_MODEL_NAME || 'gemini-3-flash-preview';
