@@ -1,11 +1,12 @@
 import { ParallelAgent, SequentialAgent } from '@google/adk';
 import { YoutubeDescriptionAgent } from './youtube-description.agent';
 import { YoutubeHashtagsAgent } from './youtube-hashtags.agent';
+import { YoutubeTimelineAgent } from './youtube-timeline.agent';
 import { YoutubeTranscriptAgent } from './youtube-transcript.agent';
 
 const ParallelYoutubeAgent = new ParallelAgent({
     name: "parallel_youtube_agent",
-    subAgents: [YoutubeDescriptionAgent, YoutubeHashtagsAgent],
+    subAgents: [YoutubeDescriptionAgent, YoutubeHashtagsAgent, YoutubeTimelineAgent],
     description: "Runs multiple Youtube agents in parallel to gather description, hashtags, and timeline."
 });
 
