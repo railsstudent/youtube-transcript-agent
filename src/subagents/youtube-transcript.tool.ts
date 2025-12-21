@@ -24,19 +24,14 @@ async function fetchTranscript(url: string) {
 
     const api = new YouTubeTranscriptApi();
     const transcript = await api.fetch(videoID);
-    // const transcriptText = transcript.snippets?.reduce(
-    //     (acc, snippet) => acc + snippet.text + ' ', ''
-    // ).trim();
 
     const transcriptText = transcript.snippets?.reduce(
         (acc, snippet) => { 
-            // console.log('snippet', snippet);
             const start = snippet.start;
             const end = snippet.start + snippet.duration;
             return `${acc}[${start}-${end}]${snippet.text} `;
         }, '').trim();
 
-    // console.log('transcriptText', transcriptText);
     return transcriptText;
 }
 
