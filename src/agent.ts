@@ -1,43 +1,57 @@
-import {FunctionTool, LlmAgent} from '@google/adk';
-import {z} from 'zod';
+import { FunctionTool, LlmAgent, ToolContext } from '@google/adk';
+import { z } from 'zod';
+import { YoutubeDescriptionAgent } from './description-agents/youtube-description.agent';
 
-const getCurrentTimeSchema = z.object({
-    timeZone: z.string().describe("The IANA timezone string, e.g., 'Europe/Paris'."),
-    city: z.string().describe("The name of the city for which to retrieve the current time.")
+process.loadEnvFile();
+const model = process.env.GEMINI_MODEL_NAME || 'gemini-3-flash-preview';
+
+const saveUserContextSchema = z.object({
+    youtube_url: z.string().describe("The YouTube URL to save in context"),
 });
 
-type GetCurrentTimeInput = z.infer<typeof getCurrentTimeSchema>;
+type SaveUserContextInput = z.infer<typeof saveUserContextSchema>;
 
-const getCityTime = ({timeZone, city}: GetCurrentTimeInput) => {
-    const now = new Date();
-    // Use built-in JS Intl formatter
-    const timeString = new Intl.DateTimeFormat('en-US', {
-        timeStyle: 'medium',
-        dateStyle: 'full',
-        timeZone,
-    }).format(now);
+const SaveUserContext = new FunctionTool({
+  name: 'save_user_context',
+  description: 'Saves user-specific information into the shared context for other agents to use.',
+  parameters: saveUserContextSchema,
+  execute: async ({ youtube_url }: SaveUserContextInput, toolContext?: ToolContext) => {
+    // Returning this data makes it part of the "Trace" and "State" 
+    // which all sub-agents in the session can see.
+    if (toolContext) {
+        toolContext.state.set('youtube_url', youtube_url);
+    }
 
-    return `The current time in ${city} is ${timeString}`;
-}
-
-/* Mock tool implementation */
-const getCurrentTime = new FunctionTool({
-    name: 'get_current_time',
-    description: 'Returns the current time in a specified city.',
-    parameters: getCurrentTimeSchema,
-    execute: getCityTime,
+    return {
+      status: 'success',
+      message: `Saved '${youtube_url}' to the shared context.`,
+    };
+  }
 });
+
+// const ParallelYoutubeAgent = new ParallelAgent({
+//     name: "parallel_youtube_agent",
+//     subAgents: [YoutubeDescriptionAgent],
+//     description: "Runs multiple Youtube agents in parallel to gather description, hashtags, and timeline."
+// });
 
 export const rootAgent = new LlmAgent({
-  name: 'hello_time_agent',
-  model: 'gemini-3-flash-preview',
-  description: 'Tells the current time in a specified city.',
-  instruction: `You are a helpful assistant that tells the current time in a city.
-                Identify the correct IANA timezone for that city (e.g., "Paris" -> "Europe/Paris").
-                Use the 'getCurrentTime' tool with that timezone and city name for this purpose.
-                Display the result to the user in a friendly manner.
-                
-                If the user says "hello" or anything else, greet them and ask which city they want to know the time for.
-                ALWAYS provide a text response. Never leave a response blank.`,
-  tools: [getCurrentTime],
+    name: 'youtube_transcript_agent',
+    model,
+    description: 'Generate details based on YouTube transcript.',
+    instruction: `You are a helpful assistant that generates useful details for the YouTube URL provided.                    
+        INSTRUCTIONS:
+        1. If the user provides a YouTube URL, use the 'save_user_context' tool to save the URL into the shared context.
+        2. If 'save_user_context' completes, check the status of the response.
+        3. If and only if the status is 'success' and 'youtube_url' is present in the shared context,
+            - Delegate to 'youtube_description_agent'.
+            - IMPORTANT: Tell the agent: "Please use the URL to generate the description."
+        4. If 'youtube_url' is not present in the shared context, ask the user to provide a valid YouTube URL.
+        5. Once the 'youtube_description_agent' agent completes, check the status of the response.
+            - When the status is 'success', extract the value of 'youtube_description' from the response and display it. 
+            - When the status is 'error', extract the error message from the response and display it.
+    `,
+    // subAgents: [ParallelYoutubeAgent],
+    subAgents: [YoutubeDescriptionAgent],
+    tools: [SaveUserContext],
 });
