@@ -1,7 +1,6 @@
-import { FunctionTool, ToolContext } from '@google/adk';
+import { FunctionTool } from '@google/adk';
 import { YouTubeTranscriptApi } from '@playzone/youtube-transcript';
 import { z } from 'zod';
-import { TRANSCRIPT_KEY } from './output-key.const';
 
 const getTranscriptSchema = z.object({
     youtube_url: z.string().describe('The URL of the YouTube video.'),
@@ -19,7 +18,7 @@ function extractVideoID(url: string) {
 async function fetchTranscript(url: string) {
     const videoID = extractVideoID(url);
     if (!videoID) {
-        return { status: 'error', message: 'Unable to extract video ID from YouTube URL provided.' };
+        throw new Error('Unable to extract video ID from YouTube URL provided.');
     }
     console.log('videoID', videoID);
 
@@ -33,18 +32,19 @@ async function fetchTranscript(url: string) {
     return transcriptText;
 }
 
-export const YoutubeTranscriptTool = new FunctionTool({
-    name: 'generate_youtube_description',
-    description: `Fetches the transcript of a YouTube video and write to ${TRANSCRIPT_KEY} in the shared context.`,
-    parameters: getTranscriptSchema,
-    execute: async ({ youtube_url }: GetTranscriptInput, toolContext?: ToolContext) => {
-        try {
-            const transcriptText = await fetchTranscript(youtube_url);
-            toolContext?.state.set(TRANSCRIPT_KEY, transcriptText);
-            return { status: 'success', [TRANSCRIPT_KEY]: transcriptText };
-        } catch (err) {
-            console.log(err);
-            return { status: 'error', message: 'Error getting YouTube transcript.' };
-        }
+async function getTranscript(youtube_url: string) {
+    try {
+        const transcript = await fetchTranscript(youtube_url);
+        return { status: 'success', transcript };
+    } catch (err) {
+        console.log(err);
+        return { status: 'error', message: 'Error getting YouTube transcript.' };
     }
+};
+
+export const YoutubeTranscriptTool = new FunctionTool({
+    name: 'fetch_youtube_transcription',
+    description: `Fetches the transcript of a YouTube video.`,
+    parameters: getTranscriptSchema,
+    execute: ({ youtube_url }: GetTranscriptInput) => getTranscript(youtube_url)
 });
