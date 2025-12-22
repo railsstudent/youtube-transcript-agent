@@ -29,7 +29,7 @@ export const SendEmailTool = new FunctionTool({
 });
 
 export const SendEmailAgent =  new LlmAgent({
-    name: "merger_agent",
+    name: "send_email_agent",
     model,
     description: 'Send an email to a recipient with the provided metadata.',
     instruction: `
