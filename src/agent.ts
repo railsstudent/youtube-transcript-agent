@@ -25,7 +25,7 @@ export const rootAgent = new LlmAgent({
         4. If '${YOUTUBE_URL_KEY}' is not present in the shared context, ask the user to provide a valid YouTube URL.
         5. Once the 'sequential_youtube_agent' agent completes, check the status of the response.
             - When the status is 'success', confirm the completion of the agent.
-            - When the status is 'error', response with the error message.
+            - When the status is 'error', responsd with the error message.
     `,
     subAgents: [SequentialYoutubeAgent],
     tools: [SaveUserContextTool],
