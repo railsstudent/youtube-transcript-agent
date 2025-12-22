@@ -4,6 +4,7 @@ import { YoutubeDescriptionAgent } from './youtube-description.agent';
 import { YoutubeHashtagsAgent } from './youtube-hashtags.agent';
 import { YoutubeTimelineAgent } from './youtube-timeline.agent';
 import { YoutubeTranscriptAgent } from './youtube-transcript.agent';
+import { SendEmailAgent } from './send-email.agent';
 
 const ParallelYoutubeAgent = new ParallelAgent({
     name: "parallel_youtube_agent",
@@ -13,6 +14,6 @@ const ParallelYoutubeAgent = new ParallelAgent({
 
 export const SequentialYoutubeAgent = new SequentialAgent({
     name: 'sequential_youtube_agent',
-    subAgents: [YoutubeTranscriptAgent, ParallelYoutubeAgent, YouTubeMergerAgent],
+    subAgents: [YoutubeTranscriptAgent, ParallelYoutubeAgent, YouTubeMergerAgent, SendEmailAgent],
     description: 'Runs Youtube agents sequentially to generate description based on transcript.',
 });

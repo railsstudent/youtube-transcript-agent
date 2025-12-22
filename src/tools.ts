@@ -8,8 +8,8 @@ const saveUserContextSchema = z.object({
 
 type SaveUserContextInput = z.infer<typeof saveUserContextSchema>;
 
-export const SaveUserContext = new FunctionTool({
-  name: 'save_user_context',
+export const SaveUserContextTool = new FunctionTool({
+  name: 'save_user_context_tool',
   description: 'Saves user-specific information into the shared context for other agents to use.',
   parameters: saveUserContextSchema,
   execute: async ({ key, value }: SaveUserContextInput, toolContext?: ToolContext) => {

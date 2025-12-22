@@ -1,6 +1,6 @@
 import { LlmAgent } from '@google/adk';
 import { YoutubeTranscriptTool } from './youtube-transcript.tool';
-import { TRANSCRIPT_KEY } from '../output-key.const';
+import { TRANSCRIPT_KEY, YOUTUBE_URL_KEY } from '../output-key.const';
 
 process.loadEnvFile();
 const model = process.env.GEMINI_MODEL_NAME || 'gemini-3-flash-preview';
@@ -13,7 +13,7 @@ export const YoutubeTranscriptAgent = new LlmAgent({
         You are a helpful assistant that fetches the transcript for a public YouTube URL provided by the user.
         
         INSTRUCTIONS:
-        1. Read 'youtube_url' from the shared context.
+        1. Read '${YOUTUBE_URL_KEY}' from the shared context.
         2. Use the 'fetch_youtube_transcription' tool to get the transcript.
         3. If the tool returns an error status, respond with the error message.
         4. If the tool is successful, your FINAL response must be the RAW text of the transcript. Do not add conversational filler like "Here is the transcript:".
