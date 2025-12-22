@@ -1,5 +1,6 @@
 import { FunctionTool, ToolContext } from '@google/adk';
 import z from 'zod';
+import { SAVE_USER_CONTEXT_TOOL_NAME } from './tool-names.constant';
 
 const saveUserContextSchema = z.object({
     key: z.string().describe("The key to store the data in the shared context"),
@@ -9,7 +10,7 @@ const saveUserContextSchema = z.object({
 type SaveUserContextInput = z.infer<typeof saveUserContextSchema>;
 
 export const SaveUserContextTool = new FunctionTool({
-  name: 'save_user_context_tool',
+  name: SAVE_USER_CONTEXT_TOOL_NAME,
   description: 'Saves user-specific information into the shared context for other agents to use.',
   parameters: saveUserContextSchema,
   execute: async ({ key, value }: SaveUserContextInput, toolContext?: ToolContext) => {

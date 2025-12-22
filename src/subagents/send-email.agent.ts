@@ -1,6 +1,6 @@
 import { LlmAgent } from '@google/adk';
 import { DESCRIPTION_KEY, HASHTAGS_KEY, RECIPIENT_EMAIL_KEY, TIMELINE_KEY } from '../output-key.const';
-import { SendEmailTool } from './send-email.tool';
+import { SEND_EMAIL_TOOL_NAME, SendEmailTool } from './send-email.tool';
 
 process.loadEnvFile();
 const model = process.env.GEMINI_MODEL_NAME || 'gemini-3-flash-preview';
@@ -20,7 +20,7 @@ export const SendEmailAgent =  new LlmAgent({
         4. Recipient Email Address: Found at '${RECIPIENT_EMAIL_KEY}'
 
         ### EMAIL REQUIREMENTS
-        - Use the 'send_email_tool' to send an email with the retrieved metadata.
+        - Use the '${SEND_EMAIL_TOOL_NAME}' to send an email with the retrieved metadata.
     `,
     tools: [SendEmailTool],
  });

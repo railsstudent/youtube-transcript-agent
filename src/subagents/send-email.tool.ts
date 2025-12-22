@@ -10,8 +10,10 @@ export const sendEmailSchema = z.object({
 
 type SendEmailInput = z.infer<typeof sendEmailSchema>;
 
+export const SEND_EMAIL_TOOL_NAME = 'send_email_tool';
+
 export const SendEmailTool = new FunctionTool({
-  name: 'send_email_tool',
+  name: SEND_EMAIL_TOOL_NAME,
   description: 'Sends an email with the provided details.',
   parameters: sendEmailSchema,
   execute: async ({ 

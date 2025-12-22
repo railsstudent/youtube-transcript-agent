@@ -2,6 +2,7 @@ import { LlmAgent } from '@google/adk';
 import { SequentialYoutubeAgent } from './subagents/youtube-agents';
 import { SaveUserContextTool } from './tools';
 import { RECIPIENT_EMAIL_KEY, YOUTUBE_URL_KEY } from './output-key.const';
+import { SAVE_USER_CONTEXT_TOOL_NAME } from './tool-names.constant';
 
 process.loadEnvFile();
 const model = process.env.GEMINI_MODEL_NAME || 'gemini-3-flash-preview';
@@ -15,10 +16,10 @@ export const rootAgent = new LlmAgent({
         INSTRUCTIONS:
         1. Ask user for a public YouTube URL and recipient email address.
           - If the user provides an input, determine it is an URL or an email address.
-          - If it is an URL, use the 'save_user_context' tool to save it to the shared context with key '${YOUTUBE_URL_KEY}'.
-          - If it is an email address, use the 'save_user_context' tool to save it to the shared context with key '${RECIPIENT_EMAIL_KEY}'.
+          - If it is an URL, use the '${SAVE_USER_CONTEXT_TOOL_NAME}' tool to save it to the shared context with key '${YOUTUBE_URL_KEY}'.
+          - If it is an email address, use the '${SAVE_USER_CONTEXT_TOOL_NAME}' tool to save it to the shared context with key '${RECIPIENT_EMAIL_KEY}'.
           - If the input is neither, ask the user to provide a valid YouTube URL or email address.
-        2. If 'save_user_context' completes, check the status of the response.
+        2. If '${SAVE_USER_CONTEXT_TOOL_NAME}' completes, check the status of the response.
         3. If and only if the status is 'success', and '${YOUTUBE_URL_KEY}' and '${RECIPIENT_EMAIL_KEY}' are present in the shared context,
             - Delegate to 'sequential_youtube_agent'.
             - IMPORTANT: Tell the agent: "Please use the URL to get the transcript."
