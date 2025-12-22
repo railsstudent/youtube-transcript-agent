@@ -19,7 +19,7 @@ export const YoutubeHashtagsAgent = new LlmAgent({
         6. The hashtags should be in English, all lowercase, and order in alphabetical ascending order.
         7. The hashtags should be presented in string format, separated by spaces.
         8. If the tool returns an error status, respond with the error message.
-        9. If successful, your final response must contain ONLY the hashtags. Do not include any JSON, tool call code, or conversational filler like "Here is your hashtags.
+        9. If successful, your final response must contain ONLY the hashtags. Do not include any JSON, tool call code, or conversational filler like "Here are your hashtags.
     `,
     outputKey: HASHTAGS_KEY,
  });
