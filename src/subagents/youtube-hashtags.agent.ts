@@ -4,7 +4,7 @@ import { HASHTAGS_KEY, TRANSCRIPT_KEY } from '../output-key.const';
 process.loadEnvFile();
 const model = process.env.GEMINI_MODEL_NAME || 'gemini-3-flash-preview';
 
-export const YoutubeHashtagsAgent = new LlmAgent({
+export const YouTubeHashtagsAgent = new LlmAgent({
     name: 'youtube_hashtags_agent',
     model,
     description: 'Generates hashtags based on the YouTube transcript.',

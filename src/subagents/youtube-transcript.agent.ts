@@ -1,11 +1,11 @@
 import { LlmAgent } from '@google/adk';
-import { YoutubeTranscriptTool } from './youtube-transcript.tool';
+import { YouTubeTranscriptTool } from './youtube-transcript.tool';
 import { TRANSCRIPT_KEY, YOUTUBE_URL_KEY } from '../output-key.const';
 
 process.loadEnvFile();
 const model = process.env.GEMINI_MODEL_NAME || 'gemini-3-flash-preview';
 
-export const YoutubeTranscriptAgent = new LlmAgent({
+export const YouTubeTranscriptAgent = new LlmAgent({
     name: 'youtube_transcript_agent',
     model,
     description: 'Fetches the transcript of a public YouTube URL provided by the user.',
@@ -19,5 +19,5 @@ export const YoutubeTranscriptAgent = new LlmAgent({
         4. If the tool is successful, your FINAL response must be the RAW text of the transcript. Do not add conversational filler like "Here is the transcript:".
     `,
     outputKey: TRANSCRIPT_KEY,   
-    tools: [YoutubeTranscriptTool],
+    tools: [YouTubeTranscriptTool],
  });

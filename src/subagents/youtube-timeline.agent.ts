@@ -4,7 +4,7 @@ import { TIMELINE_KEY, TRANSCRIPT_KEY } from '../output-key.const';
 process.loadEnvFile();
 const model = process.env.GEMINI_MODEL_NAME || 'gemini-3-flash-preview';
 
-export const YoutubeTimelineAgent = new LlmAgent({
+export const YouTubeTimelineAgent = new LlmAgent({
     name: 'youtube_timeline_agent',
     model,
     description: 'Generates a timeline with a caption based on the YouTube transcript.',

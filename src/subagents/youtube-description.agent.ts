@@ -4,7 +4,7 @@ import { DESCRIPTION_KEY, TRANSCRIPT_KEY } from '../output-key.const';
 process.loadEnvFile();
 const model = process.env.GEMINI_MODEL_NAME || 'gemini-3-flash-preview';
 
-export const YoutubeDescriptionAgent = new LlmAgent({
+export const YouTubeDescriptionAgent = new LlmAgent({
     name: 'youtube_description_agent',
     model,
     description: 'Generates a description based on the YouTube transcript.',

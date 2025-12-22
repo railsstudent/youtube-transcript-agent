@@ -45,7 +45,7 @@ async function getTranscript(youtube_url: string) {
     }
 };
 
-export const YoutubeTranscriptTool = new FunctionTool({
+export const YouTubeTranscriptTool = new FunctionTool({
     name: 'fetch_youtube_transcription',
     description: `Fetches the transcript of a YouTube video.`,
     parameters: getTranscriptSchema,
