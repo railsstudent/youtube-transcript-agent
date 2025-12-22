@@ -6,11 +6,9 @@ process.loadEnvFile();
 const model = process.env.GEMINI_MODEL_NAME || 'gemini-3-flash-preview';
 
 const sendEmailSchema = z.object({
-    metadata: z.object({
-        youtube_description: z.string().describe("YouTube video description"),
-        youtube_timeline: z.string().describe("YouTube video timeline"),
-        youtube_hashtags: z.string().describe("YouTube video hashtags"),
-    }),
+    youtube_description: z.string().describe("YouTube video description"),
+    youtube_timeline: z.string().describe("YouTube video timeline"),
+    youtube_hashtags: z.string().describe("YouTube video hashtags"),
     email: z.string().describe("Recipient email address"),
 });
 
@@ -20,7 +18,18 @@ export const SendEmailTool = new FunctionTool({
   name: 'send_email_tool',
   description: 'Sends an email with the provided details.',
   parameters: sendEmailSchema,
-  execute: async ({ metadata, email }: SendEmailInput) => {
+  execute: async ({ 
+    youtube_description: description, 
+    youtube_timeline: timeline, 
+    youtube_hashtags: hashtags, 
+    email 
+  }: SendEmailInput) => {
+    const metadata = {
+      description,
+      timeline,
+      hashtags,
+    };
+
     return {
       status: 'success',
       message: `Email sent to ${email} with metadata ${JSON.stringify(metadata)}`,
