@@ -1,5 +1,5 @@
 import { LlmAgent } from '@google/adk';
-import { SequentialYoutubeAgent } from './subagents/youtube-agents';
+import { SequentialYouTubeAgent } from './subagents/youtube-agents';
 import { SaveUserContextTool } from './tools';
 import { RECIPIENT_EMAIL_KEY, YOUTUBE_URL_KEY } from './output-key.const';
 import { SAVE_USER_CONTEXT_TOOL_NAME } from './tool-names.constant';
@@ -28,6 +28,6 @@ export const rootAgent = new LlmAgent({
             - When the status is 'success', confirm the completion of the agent.
             - When the status is 'error', responsd with the error message.
     `,
-    subAgents: [SequentialYoutubeAgent],
+    subAgents: [SequentialYouTubeAgent],
     tools: [SaveUserContextTool],
 });
