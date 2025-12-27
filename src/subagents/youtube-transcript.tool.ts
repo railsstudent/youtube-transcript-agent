@@ -10,7 +10,7 @@ type GetTranscriptInput = z.infer<typeof getTranscriptSchema>;
 
 function extractVideoID(url: string) {
     console.log('youtube_url', url);
-    const regExp = /^.*(?:(?:youtu.be\/|v\/|\/u\/\w\/|embed\/|watch\?))\??v?=?([^#&?]*).*/;
+    const regExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|shorts\/)|(?:(?:watch)?\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*/;
     const match = url.match(regExp);
     return (match && match?.[1]?.length === 11) ? match[1] : null;
 }
@@ -22,23 +22,31 @@ async function fetchTranscript(url: string) {
     }
     console.log('videoID', videoID);
 
-    const api = new YouTubeTranscriptApi();
-    const transcript = await api.fetch(videoID);
+    try {
+        const api = new YouTubeTranscriptApi();
+        const transcript = await api.fetch(videoID);
 
-    const transcriptText = transcript.snippets?.reduce(
-        (acc, snippet) => { 
-            const start = snippet.start;
-            const end = snippet.start + snippet.duration;
-            return `${acc}[${start}-${end}]${snippet.text} `;
-        }, '').trim();
+        const transcriptText = transcript.snippets?.reduce(
+            (acc, snippet) => { 
+                const start = snippet.start;
+                const end = snippet.start + snippet.duration;
+                return `${acc}[${start}-${end}]${snippet.text} `;
+            }, '').trim();
 
-    return transcriptText;
+        return transcriptText;
+    } catch (e) {
+        console.error(e);
+        return { status: 'error', message: 'Error getting YouTube transcript in the custom tool.' };
+    }
 }
 
 async function getTranscript(youtube_url: string) {
     try {
         const transcript = await fetchTranscript(youtube_url);
-        return { status: 'success', transcript };
+        if (typeof transcript === 'string') {
+            return { status: 'success', transcript };
+        }
+        return transcript;
     } catch (err) {
         console.log(err);
         return { status: 'error', message: 'Error getting YouTube transcript.' };
