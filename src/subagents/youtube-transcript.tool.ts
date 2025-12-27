@@ -18,7 +18,10 @@ function extractVideoID(url: string) {
 async function fetchTranscript(url: string) {
     const videoID = extractVideoID(url);
     if (!videoID) {
-        throw new Error('Unable to extract video ID from YouTube URL provided.');
+        return { 
+            status: 'error',
+            message: 'Unable to extract video ID from YouTube URL provided.'
+        };
     }
     console.log('videoID', videoID);
 
@@ -36,7 +39,10 @@ async function fetchTranscript(url: string) {
         return transcriptText;
     } catch (e) {
         console.error(e);
-        return { status: 'error', message: 'Error getting YouTube transcript in the custom tool.' };
+        return { 
+            status: 'error', 
+            message: 'Error getting YouTube transcript in the custom tool.'
+        };
     }
 }
 
@@ -49,7 +55,10 @@ async function getTranscript(youtube_url: string) {
         return transcript;
     } catch (err) {
         console.log(err);
-        return { status: 'error', message: 'Error getting YouTube transcript.' };
+        return { 
+            status: 'error', 
+            message: 'Error getting YouTube transcript.' 
+        };
     }
 };
 
